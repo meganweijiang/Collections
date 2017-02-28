@@ -20,7 +20,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,
     @IBOutlet weak var favoriteButton: FavoriteControl!
     @IBOutlet weak var saveButton: UIBarButtonItem!
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -42,7 +41,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-
+ 
         // Set up views if editing an existing Item.
         if let item = item {
             navigationItem.title = item.name
@@ -65,6 +64,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if(text == "\n") {
             textView.resignFirstResponder()
+            item?.description = textView.text
             return false
         }
         return true
@@ -121,7 +121,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,
     }
     
     // Keyboard Functions
-    
+ 
     func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             let keyboardHeight = keyboardSize.height
