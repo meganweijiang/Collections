@@ -26,6 +26,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,
         
         // Handle the text field’s user input through delegate callbacks.
         nameTextField.delegate = self
+        descriptionTextView.delegate = self
         
         // Do any additional setup after loading the view, typically from a nib.
         descriptionTextView?.delegate = self
@@ -39,8 +40,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+
         // Set up views if editing an existing Item.
         if let item = item {
             navigationItem.title = item.name
@@ -67,14 +69,10 @@ class ViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,
         }
         return true
     }
-    
-    func descriptionDidEndEditing(_ aTextView: UITextView) {
-        navigationItem.title = aTextView.text
-    }
 
     func textViewDidBeginEditing(_ textView: UITextView) {
         textView.textColor = UIColor.black
-        if descriptionTextView.isFirstResponder && item?.description == nil{
+        if item?.description == nil{
             textView.text = nil
         }
         else {
@@ -83,9 +81,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
-        if item?.description == nil {
+        if textView.text == nil {
             textView.text = "Enter a description"
             textView.textColor = UIColor.lightGray
+        }
+        else {
+            navigationItem.title = textView.text
+            item?.description = textView.text
         }
     }
     
@@ -120,23 +122,20 @@ class ViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,
     
     // Keyboard Functions
     
-    func keyboardWillShow(notification: NSNotification) {        
+    func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            let keyboardHeight = keyboardSize.height
             if descriptionTextView.isFirstResponder {
-                if self.view.frame.origin.y == 0{
-                    self.view.frame.origin.y -= keyboardSize.height
-                }
+                self.view.frame.origin.y -= keyboardHeight
             }
         }
-        
     }
     
     func keyboardWillHide(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-            if descriptionTextView.isFirstResponder {
-                if self.view.frame.origin.y != 0{
-                    self.view.frame.origin.y += keyboardSize.height
-                }
+            let keyboardHeight = keyboardSize.height
+            if descriptionTextView.resignFirstResponder() {
+                self.view.frame.origin.y += keyboardHeight
             }
         }
     }
