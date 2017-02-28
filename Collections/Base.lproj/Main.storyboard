@@ -67,7 +67,7 @@
                     <navigationItem key="navigationItem" title="Your Items" id="rr0-uC-ZGQ">
                         <barButtonItem key="rightBarButtonItem" style="plain" systemItem="add" id="fNP-ER-duE">
                             <connections>
-                                <segue destination="okB-EY-SoJ" kind="presentation" id="3Ja-gI-f4X"/>
+                                <segue destination="okB-EY-SoJ" kind="presentation" identifier="AddItem" id="3Ja-gI-f4X"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -217,6 +217,6 @@
         <image name="defaultImage" width="241" height="302"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="aFa-sS-wlB"/>
+        <segue reference="ael-ec-zHt"/>
     </inferredMetricsTieBreakers>
 </document>

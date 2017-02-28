@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import os.log
 
 class ItemTableViewController: UITableViewController {
 
@@ -95,15 +96,39 @@ class ItemTableViewController: UITableViewController {
     }
     */
 
-    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        
+        super.prepare(for: segue, sender: sender)
+        
+        switch(segue.identifier ?? "") {
+            
+        case "AddItem":
+            os_log("Adding a new item.", log: OSLog.default, type: .debug)
+            
+        case "ShowDetail":
+            guard let itemDetailViewController = segue.destination as? ViewController else {
+                fatalError("Unexpected destination: \(segue.destination)")
+            }
+            
+            guard let selectedItemCell = sender as? ItemTableViewCell else {
+                fatalError("Unexpected sender: \(sender)")
+            }
+            
+            guard let indexPath = tableView.indexPath(for: selectedItemCell) else {
+                fatalError("The selected cell is not being displayed by the table")
+            }
+            
+            let selectedItem = items[indexPath.row]
+            itemDetailViewController.item = selectedItem
+            
+        default:
+            fatalError("Unexpected Segue Identifier; \(segue.identifier)")
+        }
     }
-    */
+
     
     private func loadSampleItems() {
         let photo = UIImage(named: "defaultImage")
@@ -116,14 +141,21 @@ class ItemTableViewController: UITableViewController {
     // Actions
     
     @IBAction func unwindToItemList(sender: UIStoryboardSegue) {
+        
         if let sourceViewController = sender.source as? ViewController, let item = sourceViewController.item {
             
-            // Add a new item.
-            let newIndexPath = IndexPath(row: items.count, section: 0)
-            
-            items.append(item)
-            tableView.insertRows(at: [newIndexPath], with: .automatic)
+            if let selectedIndexPath = tableView.indexPathForSelectedRow {
+                // Update an existing item.
+                items[selectedIndexPath.row] = item
+                tableView.reloadRows(at: [selectedIndexPath], with: .none)
+            }
+            else {
+                // Add a new item.
+                let newIndexPath = IndexPath(row: items.count, section: 0)
+                
+                items.append(item)
+                tableView.insertRows(at: [newIndexPath], with: .automatic)
+            }
         }
     }
-
 }

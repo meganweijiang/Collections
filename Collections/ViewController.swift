@@ -34,6 +34,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,
         descriptionTextView.layer.cornerRadius = 5;
         descriptionTextView.text = "Enter a description"
         descriptionTextView.textColor = UIColor.lightGray
+        if (item?.description != nil) {
+            descriptionTextView.textColor = UIColor.black
+        }
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
@@ -43,6 +46,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,
             navigationItem.title = item.name
             nameTextField.text   = item.name
             photoImageView.image = item.photo
+            descriptionTextView.text = item.description
             favoriteButton.favorite = item.favorite
         }
         
@@ -69,14 +73,17 @@ class ViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,
     }
 
     func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == UIColor.lightGray {
+        textView.textColor = UIColor.black
+        if descriptionTextView.isFirstResponder && item?.description == nil{
             textView.text = nil
-            textView.textColor = UIColor.black
+        }
+        else {
+            textView.text = item?.description
         }
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.isEmpty {
+        if item?.description == nil {
             textView.text = "Enter a description"
             textView.textColor = UIColor.lightGray
         }
@@ -157,6 +164,18 @@ class ViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,
     
     @IBAction func cancel(_ sender: UIBarButtonItem) {
         dismiss(animated: true, completion: nil)
+        // Depending on style of presentation (modal or push presentation), this view controller needs to be dismissed in two different ways.
+        let isPresentingInAddMealMode = presentingViewController is UINavigationController
+        
+        if isPresentingInAddMealMode {
+            dismiss(animated: true, completion: nil)
+        }
+        else if let owningNavigationController = navigationController{
+            owningNavigationController.popViewController(animated: true)
+        }
+        else {
+            fatalError("The ViewController is not inside a navigation controller.")
+        }
     }
     
     
