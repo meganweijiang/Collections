@@ -113,8 +113,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate,
     
     // Keyboard Functions
     
-    func keyboardWillShow(notification: NSNotification) {
-        
+    func keyboardWillShow(notification: NSNotification) {        
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             if descriptionTextView.isFirstResponder {
                 if self.view.frame.origin.y == 0{

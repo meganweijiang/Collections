@@ -83,7 +83,7 @@ class FavoriteControl: UIStackView {
     
     private func updateButtonSelectionStates() {
         for (_, button) in favoriteButtons.enumerated() {
-            // If the index of a button is less than the rating, that button should be selected.
+
             button.isSelected = favorite == true
             
         }

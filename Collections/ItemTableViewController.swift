@@ -115,10 +115,10 @@ class ItemTableViewController: UITableViewController {
     
     // Actions
     
-    @IBAction func unwindToMealList(sender: UIStoryboardSegue) {
+    @IBAction func unwindToItemList(sender: UIStoryboardSegue) {
         if let sourceViewController = sender.source as? ViewController, let item = sourceViewController.item {
             
-            // Add a new meal.
+            // Add a new item.
             let newIndexPath = IndexPath(row: items.count, section: 0)
             
             items.append(item)
